@@ -1,54 +1,75 @@
 package pages;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
-import utils.RandomGenerator;
 
-import java.util.Random;
-
+import static com.codeborne.selenide.Condition.cssClass;
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
+import static utils.RandomGenerator.generateInt;
+import static utils.RandomGenerator.randStr;
 
 public class AddPage {
     private static String[] enteredValues;
-    private static final Random random = new Random();
 
-
+    private static final String[] STEP_NAMES = {"Ввод данных", "Подтверждение данных", "Расчет", "Результат"};
     public static SelenideElement btnForward = $x("//input[@value='Вперед']");
     public static SelenideElement btnBack = $x("//input[@value = 'Назад']");
+    public static SelenideElement btnReturnToStart = $x("//input[@value = 'Вернуться к вводу данных']");
+
     public static SelenideElement sumValue = $x("//th[text()='Итого:']/following-sibling::td");
     public static SelenideElement sumRow = $x("//th[text()='Итого:']/parent::tr");
-    public static SelenideElement[] valueFields = {
-            $(By.id("value1")),
-            $(By.id("value2")),
-            $(By.id("value3"))
-    };
-
+    public static SelenideElement[] valueFields = {$(By.id("value1")), $(By.id("value2")), $(By.id("value3"))};
 
     public static SelenideElement stepName = $x("//div[@class='animate-switch ng-scope']/h4");
-
     public static SelenideElement tableTitle = $x("//div[@ng-class='vm.slideDir']/div/h4");
+    public static Condition greenRow = cssClass("bg-success");
 
-//    private static ElementsCollection valueFields = $$x()
-
-    public static void addValues(int args) {
+    /**
+     * Method is for filling the fields with string or integer values
+     * @param args - number of values
+     * @param isInt - if true fill with int values
+     */
+    public static void addValues(int args, boolean isInt) {
         enteredValues = new String[args];
         String s;
         for (int i = 0; i < args; i++) {
-            s = String.valueOf(random.nextInt(Integer.MAX_VALUE));
+            s = String.valueOf(isInt ? generateInt(Integer.MAX_VALUE) : randStr(6));
             valueFields[i].val(s);
-            enteredValues[i]=s;
+            enteredValues[i] = s;
         }
     }
 
-    public static void addWrongValues(){
-        final String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+";
+    /**
+     * Method is for filling the fields with even or odd integer values
+     * @param isEvenValues - if true fill with even values
+     */
+    public static void addEvenValues(boolean isEvenValues) {
+        enteredValues = new String[3];
+        String s;
+        for (int i = 0; i < 3; i++) {
+            s = String.valueOf(isEvenValues ? generateInt(Integer.MAX_VALUE / 2) * 2 : generateInt(Integer.MAX_VALUE / 2) * 2 + 1);
+            valueFields[i].val(s);
+            enteredValues[i] = s;
+        }
     }
 
+    /**
+     * Add any values
+     * @param values - String values
+     */
+    public static void addValues(String... values) {
+        for (int i = 0; i < values.length; i++) {
+            valueFields[i].val(values[i]);
+        }
+    }
+
+    /**
+     * Calculate sum based on entered valuies
+     * @return expected sum
+     */
     public static String expectedSum() {
         long sum = 0;
         for (String value : enteredValues) {
@@ -57,12 +78,23 @@ public class AddPage {
         return String.valueOf(sum);
     }
 
+    /**
+     * Check table with entered values
+     */
     public static void enteredValuesCheck() {
         for (int i = 0; i < 3; i++) {
             $x(String.format("(//th[starts-with(text(),'Значение')]/following-sibling::td)[%s]", i + 1))
                     .should(text((enteredValues[i])));
-
         }
+    }
+
+    /**
+     * Get expected Step Name
+     * @param stepNumber
+     * @return the name of requested step
+     */
+    public static String getStepName(int stepNumber) {
+        return STEP_NAMES[stepNumber];
     }
 
 }
