@@ -31,13 +31,12 @@ public class AddPage {
     /**
      * Method is for filling the fields with string or integer values
      * @param args - number of values
-     * @param isInt - if true fill with int values
      */
-    public static void addValues(int args, boolean isInt) {
+    public static void addValues(int args) {
         enteredValues = new String[args];
         String s;
         for (int i = 0; i < args; i++) {
-            s = String.valueOf(isInt ? generateInt(Integer.MAX_VALUE) : randStr(6));
+            s = String.valueOf(generateInt(Integer.MAX_VALUE));
             valueFields[i].val(s);
             enteredValues[i] = s;
         }
@@ -47,7 +46,7 @@ public class AddPage {
      * Method is for filling the fields with even or odd integer values
      * @param isEvenValues - if true fill with even values
      */
-    public static void addEvenValues(boolean isEvenValues) {
+    public static void addEvenOddValues(boolean isEvenValues) {
         enteredValues = new String[3];
         String s;
         for (int i = 0; i < 3; i++) {

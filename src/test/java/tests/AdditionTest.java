@@ -10,7 +10,17 @@ import static com.codeborne.selenide.Condition.*;
 import static pages.AddPage.*;
 import static utils.RandomGenerator.randStr;
 
-public class AdditionTest extends BaseTest{
+public class AdditionTest extends BaseTest {
+    private static final int TIMEOUT = 5000;
+    private static final int STRING_LENGTH = 6;
+    private static final int TWO_ARGS = 2;
+    private static final int THREE_ARGS = 3;
+    private static final int STEP_0 = 0;
+    private static final int STEP_1 = 1;
+    private static final int STEP_2 = 2;
+    private static final int STEP_3 = 3;
+    private static final boolean IS_EVEN = true;
+    private static final boolean IS_NOT_EVEN = false;
 
     @Test
     public void testAddition() {
@@ -18,62 +28,59 @@ public class AdditionTest extends BaseTest{
         LoginPage.login();
         btnForward.shouldBe(disabled);
         btnBack.shouldBe(disabled);
-        AddPage.addValues(2,true);
+        addValues(TWO_ARGS);
         btnForward.shouldBe(disabled);
 
-        AddPage.addValues(3, true);
+        addValues(THREE_ARGS);
         btnBack.shouldBe(disabled);
         btnForward.shouldBe(enabled);
 
-        stepName.shouldHave(text(getStepName(0)));
-        tableTitle.shouldHave(text(getStepName(0)));
+        stepName.shouldHave(text(getStepName(STEP_0)));
+        tableTitle.shouldHave(text(getStepName(STEP_0)));
 
         btnForward.click();
-        stepName.shouldHave(text(getStepName(1)));
-        tableTitle.shouldHave(text(getStepName(1)));
+        stepName.shouldHave(text(getStepName(STEP_1)));
+        tableTitle.shouldHave(text(getStepName(STEP_1)));
 
-        AddPage.enteredValuesCheck();
+        enteredValuesCheck();
         btnForward.click();
-        stepName.shouldHave(text(getStepName(2)));
-        tableTitle.shouldHave(text(getStepName(2)));
+        stepName.shouldHave(text(getStepName(STEP_2)));
+        tableTitle.shouldHave(text(getStepName(STEP_2)));
         btnForward.shouldBe(disabled);
         btnBack.shouldBe(disabled);
 
-        AddPage.sumValue.waitUntil(exist,10000)
-                .shouldHave(text(AddPage.expectedSum()));
+        sumValue.waitUntil(exist, TIMEOUT).shouldHave(text(AddPage.expectedSum()));
         enteredValuesCheck();
-        stepName.shouldHave(text(getStepName(3)));
-        tableTitle.shouldHave(text(getStepName(3)));
-
-
+        stepName.shouldHave(text(getStepName(STEP_3)));
+        tableTitle.shouldHave(text(getStepName(STEP_3)));
     }
 
     @Test
-    public void evenResultTest(){
+    public void evenResultTest() {
         HomePage.openMainPage();
         LoginPage.login();
-        AddPage.addEvenValues(true);
+        AddPage.addEvenOddValues(IS_EVEN);
         btnForward.click();
         btnForward.click();
-        AddPage.sumValue.waitUntil(exist,10000).shouldHave(text(AddPage.expectedSum()));
-        AddPage.sumRow.shouldHave(greenRow);
+        sumValue.waitUntil(exist, TIMEOUT).shouldHave(text(AddPage.expectedSum()));
+        sumRow.shouldHave(greenRow);
 
         btnReturnToStart.click();
-        addEvenValues(false);
+        addEvenOddValues(IS_NOT_EVEN);
         btnForward.click();
         btnForward.click();
-        AddPage.sumValue.waitUntil(exist,10000).shouldHave(text(AddPage.expectedSum()));
-        AddPage.sumRow.shouldNotHave(greenRow);
+        sumValue.waitUntil(exist, TIMEOUT).shouldHave(text(AddPage.expectedSum()));
+        sumRow.shouldNotHave(greenRow);
     }
 
     @Test
-    public void enterWrongValues(){
+    public void enterWrongValues() {
         String doubleValue = "123.45";
         String negInt = "-78";
-        String stringValue = randStr(6);
+        String stringValue = randStr(STRING_LENGTH);
         HomePage.openMainPage();
         LoginPage.login();
-        AddPage.addValues(doubleValue,negInt,stringValue);
+        AddPage.addValues(doubleValue, negInt, stringValue);
         AddPage.valueFields[0].shouldNotHave(value("."));
         AddPage.valueFields[1].shouldNotHave(value("-"));
         AddPage.valueFields[2].shouldNotHave(value(stringValue)).shouldBe(empty);
