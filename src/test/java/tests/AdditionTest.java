@@ -2,16 +2,19 @@ package tests;
 
 import org.junit.Test;
 import pages.AddPage;
+import pages.HomePage;
 import pages.LoginPage;
 import utils.BaseTest;
 
 import static com.codeborne.selenide.Condition.*;
 import static pages.AddPage.*;
+import static utils.RandomGenerator.randStr;
 
 public class AdditionTest extends BaseTest{
 
     @Test
     public void testAddition() {
+        HomePage.openMainPage();
         LoginPage.login();
         btnForward.shouldBe(disabled);
         btnBack.shouldBe(disabled);
@@ -47,6 +50,7 @@ public class AdditionTest extends BaseTest{
 
     @Test
     public void evenResultTest(){
+        HomePage.openMainPage();
         LoginPage.login();
         AddPage.addEvenValues(true);
         btnForward.click();
@@ -66,7 +70,8 @@ public class AdditionTest extends BaseTest{
     public void enterWrongValues(){
         String doubleValue = "123.45";
         String negInt = "-78";
-        String stringValue = "";
+        String stringValue = randStr(6);
+        HomePage.openMainPage();
         LoginPage.login();
         AddPage.addValues(doubleValue,negInt,stringValue);
         AddPage.valueFields[0].shouldNotHave(value("."));

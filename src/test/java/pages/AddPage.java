@@ -15,6 +15,7 @@ public class AddPage {
     private static String[] enteredValues;
 
     private static final String[] STEP_NAMES = {"Ввод данных", "Подтверждение данных", "Расчет", "Результат"};
+    public static SelenideElement titleAddPage = $x("//h1[text()='Операция сложения']");
     public static SelenideElement btnForward = $x("//input[@value='Вперед']");
     public static SelenideElement btnBack = $x("//input[@value = 'Назад']");
     public static SelenideElement btnReturnToStart = $x("//input[@value = 'Вернуться к вводу данных']");
@@ -83,7 +84,7 @@ public class AddPage {
      */
     public static void enteredValuesCheck() {
         for (int i = 0; i < 3; i++) {
-            $x(String.format("(//th[starts-with(text(),'Значение')]/following-sibling::td)[%s]", i + 1))
+            $x(String.format("(//th[starts-with(text(),'Значение')]/following-sibling ::td)[%s]", i + 1))
                     .should(text((enteredValues[i])));
         }
     }
